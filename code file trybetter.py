@@ -1,5 +1,4 @@
 import folium
-from folium import PolyLine
 
 # Create a base map
 map = folium.Map(location=[30.0, 70.0], zoom_start=3)
@@ -37,14 +36,8 @@ sites = [
 ]
 
 # Add markers to the map
-site_markers = {}
 for site in sites:
-    marker = folium.Marker(
-        location=[site[1], site[2]],
-        popup=site[0],
-    )
-    marker.add_to(map)
-    site_markers[site[0]] = [site[1], site[2]]
+    folium.Marker(location=[site[1], site[2]], popup=site[0]).add_to(map)
 
 # Define inter-civilization paths
 paths = [
@@ -68,8 +61,8 @@ paths = [
 
 # Add paths to the map
 for path in paths:
-    point1 = site_markers[path[0]]
-    point2 = site_markers[path[1]]
+    point1 = [site[1], site[2]] for site in sites if site[0] == path[0]][0]
+    point2 = [site[1], site[2]] for site in sites if site[0] == path[1]][0]
     folium.PolyLine(locations=[point1, point2], color='blue').add_to(map)
 
 # Save the map to an HTML file
