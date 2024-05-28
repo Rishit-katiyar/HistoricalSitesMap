@@ -1,10 +1,19 @@
 import folium
 
+def add_markers(map, sites):
+    """Add markers for historical sites to the map."""
+    for site in sites:
+        name, lat, lon = site
+        folium.Marker(
+            location=[lat, lon],
+            popup=name,
+        ).add_to(map)
+
 # Create a base map
-map = folium.Map(location=[30.0, 70.0], zoom_start=3)
+base_map = folium.Map(location=[30.0, 70.0], zoom_start=3)
 
 # List of historical sites with coordinates
-sites = [
+historical_sites = [
     ("Göbekli Tepe", 37.2231, 38.9225),
     ("Tower of Jericho", 31.8667, 35.4500),
     ("Çatalhöyük", 37.6670, 32.8262),
@@ -35,15 +44,11 @@ sites = [
     ("Temple of Garni", 40.1123, 44.7294),
 ]
 
-# Add markers to the map
-for site in sites:
-    folium.Marker(
-        location=[site[1], site[2]],
-        popup=site[0],
-    ).add_to(map)
+# Add markers to the base map
+add_markers(base_map, historical_sites)
 
 # Save the map to an HTML file
-map.save("historical_sites_map.html")
+base_map.save("historical_sites_map.html")
 
 # Display the map
-map
+base_map
