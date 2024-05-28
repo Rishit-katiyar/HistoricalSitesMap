@@ -12,7 +12,6 @@ Welcome to the Historical Sites Map with Terrain-Aware Paths Generator Toolkit f
 - [Configuration](#configuration)
 - [Customization](#customization)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Introduction
 
