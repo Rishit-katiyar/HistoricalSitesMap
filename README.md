@@ -17,7 +17,7 @@ Welcome to the Historical Sites Map with Terrain-Aware Paths Generator Toolkit f
 
 The Historical Sites Map with Terrain-Aware Paths Generator Toolkit for Advanced Cartographical Visualization and Terrain Navigation Optimization is a versatile Python script designed to cater to the needs of both amateur enthusiasts and seasoned professionals in the fields of historical cartography, geographic information systems (GIS), and terrain analysis. By leveraging the power of modern computing and geographical data processing techniques, this toolkit empowers users to unlock the full potential of their historical site datasets and create captivating visualizations that transcend conventional mapping paradigms.
 
-![Screenshot_28-5-2024_222019_](https://github.com/Rishit-katiyar/HistoricalSitesMap/assets/167756997/36268b6c-c156-4270-90fa-ea17b3f4b71a)
+![Screenshot_29-5-2024_132745_](https://github.com/Rishit-katiyar/HistoricalSitesMap/assets/167756997/71b83931-b9e4-4e56-8cb1-0b993e49f2d0)
 
 ## Motivation
 
