@@ -1,10 +1,7 @@
 import folium
-from geopy.distance import geodesic
+import numpy as np
 
-# Create a base map
-map = folium.Map(location=[30.0, 70.0], zoom_start=3)
-
-# List of historical sites with coordinates
+# Define the historical sites with their names and coordinates
 sites = [
     ("Göbekli Tepe", 37.2231, 38.9225),
     ("Tower of Jericho", 31.8667, 35.4500),
@@ -36,46 +33,159 @@ sites = [
     ("Temple of Garni", 40.1123, 44.7294),
 ]
 
-# Add markers to the map
-site_markers = {}
-for site in sites:
-    marker = folium.Marker(
-        location=[site[1], site[2]],
-        popup=site[0],
-    )
-    marker.add_to(map)
-    site_markers[site[0]] = [site[1], site[2]]
+# Convert the sites to a dictionary for easy access
+site_dict = {site[0]: (site[1], site[2]) for site in sites}
 
-# Define inter-civilization paths
-paths = [
-    ("Göbekli Tepe", "Tower of Jericho"),
-    ("Göbekli Tepe", "Çatalhöyük"),
-    ("Çatalhöyük", "Mehrgarh"),
-    ("Mehrgarh", "Harappa"),
-    ("Harappa", "Mohenjo Daro"),
-    ("Anu ziggurat of Uruk", "Ziggurat of Ur"),
-    ("Ziggurat of Ur", "Ziggurat of Dur-Kurigalzu"),
-    ("Ziggurat of Dur-Kurigalzu", "Chogha Zanbil"),
-    ("Shahr-e Sukhteh", "Tepe Sialk ziggurat"),
-    ("Tepe Sialk ziggurat", "Persepolis"),
-    ("Persepolis", "Tomb of Cyrus"),
-    ("Royal Palace of Ebla", "Masada"),
-    ("Sinauli", "Keezhadi excavation site"),
-    ("Keezhadi excavation site", "Adichanallur"),
-    ("Sanchi Stupa", "Dhamek Stupa"),
-    ("Mausoleum of the First Qin Emperor", "Shimao"),
-]
+# Define more complex paths between sites with multiple checkpoints representing valleys, passes, or ancient cities
+paths = {
+    ("Göbekli Tepe", "Tower of Jericho"): [
+        ("Euphrates River", 36.55, 38.2667),
+        ("Aleppo", 36.2021, 37.1343),
+        ("Damascus", 33.5138, 36.2765),
+        ("Jericho", 31.8667, 35.4500),
+        ("Jordan River", 32.1943, 35.4521),
+        ("Amman", 31.9539, 35.9106),
+    ],
+    ("Göbekli Tepe", "Çatalhöyük"): [
+        ("Malatya", 38.3489, 38.3335),
+        ("Euphrates River", 37.1083, 38.7858),
+        ("Seyhan River", 37.0, 35.3213),
+        ("Konya", 37.8746, 32.4932),
+    ],
+    ("Çatalhöyük", "Mehrgarh"): [
+        ("Tigris River", 37.1053, 40.7787),
+        ("Mosul", 36.3309, 43.1053),
+        ("Baghdad", 33.3152, 44.3661),
+        ("Tehran", 35.6892, 51.3890),
+        ("Zahedan", 29.4978, 60.8723),
+    ],
+    ("Mehrgarh", "Harappa"): [
+        ("Sibi", 29.5549, 67.8760),
+        ("Indus River", 27.9272, 68.7513),
+        ("Rohri", 27.6926, 68.8951),
+        ("Multan", 30.1575, 71.5249),
+    ],
+    ("Harappa", "Mohenjo Daro"): [
+        ("Hyderabad", 25.3960, 68.3578),
+        ("Indus River", 24.7681, 67.0236),
+    ],
+    ("Anu ziggurat of Uruk", "Ziggurat of Ur"): [
+        ("Euphrates River", 30.9546, 46.1022),
+    ],
+    ("Ziggurat of Ur", "Ziggurat of Dur-Kurigalzu"): [
+        ("Euphrates River", 32.0301, 45.3131),
+    ],
+    ("Ziggurat of Dur-Kurigalzu", "Chogha Zanbil"): [
+        ("Tigris River", 32.3825, 47.9753),
+        ("Ahvaz", 31.3203, 48.6692),
+    ],
+    ("Shahr-e Sukhteh", "Tepe Sialk ziggurat"): [
+        ("Isfahan", 32.6546, 51.6680),
+    ],
+    ("Tepe Sialk ziggurat", "Persepolis"): [
+        ("Shiraz", 29.5918, 52.5836),
+    ],
+    ("Persepolis", "Tomb of Cyrus"): [],
+    ("Royal Palace of Ebla", "Masada"): [
+        ("Amman", 31.9539, 35.9106),
+        ("Jordan River", 31.9, 35.6),
+    ],
+    ("Sinauli", "Keezhadi excavation site"): [
+        ("Nagpur", 21.1458, 79.0882),
+        ("Godavari River", 19.3, 77.2),
+    ],
+    ("Keezhadi excavation site", "Adichanallur"): [],
+    ("Sanchi Stupa", "Dhamek Stupa"): [
+        ("Narmada River", 22.4758, 72.8937),
+    ],
+    ("Mausoleum of the First Qin Emperor", "Shimao"): [
+        ("Yellow River", 34.0, 109.0),
+    ],
+}
+
+# Create a base map centered at an average location
+map_center = [30.0, 70.0]
+map = folium.Map(location=map_center, zoom_start=3)
+
+# Add markers for each site
+for site in sites:
+    folium.Marker(location=[site[1], site[2]], popup=site[0]).add_to(map)
+
+# Function to create waypoints between two coordinates
+def interpolate_points(start, end, num_points=100):
+    lat_points = np.linspace(start[0], end[0], num_points)
+    lon_points = np.linspace(start[1], end[1], num_points)
+    return list(zip(lat_points, lon_points))
+
+# Function to manually adjust paths to follow known valleys, rivers, and avoid mountains
+def adjust_path(start, end, checkpoints):
+    path = [start]
+    for checkpoint in checkpoints:
+        path.append((checkpoint[1], checkpoint[2]))
+    path.append(end)
+
+    adjusted_path = []
+    for i in range(len(path) - 1):
+        segment = interpolate_points(path[i], path[i + 1])
+        adjusted_path.extend(segment)
+    return adjusted_path
 
 # Add paths to the map
-for path in paths:
-    point1 = site_markers[path[0]]
-    point2 = site_markers[path[1]]
-    # For a more realistic route, we would need a proper routing API
-    # Here, we use a straight line approximation
-    folium.PolyLine(locations=[point1, point2], color='blue').add_to(map)
+for (start_site, end_site), checkpoints in paths.items():
+    start = site_dict[start_site]
+    end = site_dict[end_site]
+    adjusted_path = adjust_path(start, end, checkpoints)
+    folium.PolyLine(locations=adjusted_path, color='blue').add_to(map)
+
+# Add trade paths between sites
+trade_paths = {
+    ("Göbekli Tepe", "Tower of Jericho"): [
+        ("Trade Point 1", 36.1, 37.5),
+        ("Trade Point 2", 34.8, 36.9),
+        ("Trade Point 3", 35.5, 37.2),
+        ("Trade Point 4", 34.2, 36.6),
+    ],
+    ("Çatalhöyük", "Mehrgarh"): [
+        ("Trade Point 3", 37.5, 39.5),
+        ("Trade Point 4", 35.7, 42.1),
+        ("Trade Point 5", 36.2, 40.8),
+        ("Trade Point 6", 35.1, 41.5),
+    ],
+    ("Harappa", "Mohenjo Daro"): [
+        ("Trade Point 5", 26.5, 67.7),
+        ("Trade Point 6", 25.1, 66.5),
+        ("Trade Point 7", 25.8, 67.3),
+        ("Trade Point 8", 26.2, 66.9),
+    ],
+    ("Royal Palace of Ebla", "Masada"): [
+        ("Trade Point 7", 34.7, 36.0),
+        ("Trade Point 8", 32.2, 35.8),
+        ("Trade Point 9", 33.5, 35.9),
+        ("Trade Point 10", 32.8, 35.6),
+    ],
+}
+
+# Add trade paths to the map
+for (start_site, end_site), trade_points in trade_paths.items():
+    for point in trade_points:
+        folium.CircleMarker(location=[point[1], point[2]], radius=5, color='green', fill=True, fill_color='green').add_to(map)
+
+# Add legends
+legend_html = '''
+     <div style="position: fixed; 
+     bottom: 50px; left: 50px; width: 150px; height: 90px; 
+     border:2px solid grey; z-index:9999; font-size:14px;
+     background-color:white; opacity: 0.8;
+     ">
+     <p style="margin: 10px;"> <b>Legends</b> </p>
+     <p style="margin: 5px;"><i class="fa fa-circle" style="color:green"></i> Trade Path Points</p>
+     <p style="margin: 5px;"><i class="fa fa-circle" style="color:blue"></i> Historical Paths</p>
+      </div>
+     '''
+map.get_root().html.add_child(folium.Element(legend_html))
 
 # Save the map to an HTML file
-map.save("historical_sites_with_paths_map.html")
+map.save("historical_sites_map.html")
 
 # Display the map
 map
