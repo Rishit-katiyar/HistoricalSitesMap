@@ -1,5 +1,6 @@
 # Historical Sites Map
 
+
 Welcome to our Historical Sites Map toolkit! Whether you're a history buff or a terrain enthusiast, our Python script has got you covered. It helps you create beautiful maps of historical sites and cleverly plan paths that work with the terrain, making navigation a breeze.
 
 ## Table of Contents
