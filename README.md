@@ -64,4 +64,3 @@ One of our toolkit's strengths is its flexibility. Whether you're a developer or
 ## Contributing
 
 We welcome contributions from all members of the cartography and terrain analysis communities. Whether you're fixing bugs, adding features, or improving documentation, your input is valuable. Check out our CONTRIBUTING.md file for guidelines on how to contribute.
-
