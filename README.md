@@ -5,14 +5,14 @@ Welcome to our Historical Sites Map toolkit! Whether you're a history buff or a 
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-- [Motivation](#motivation)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Customization](#customization)
-- [Contributing](#contributing)
+-   [Introduction](#introduction)
+-   [Motivation](#motivation)
+-   [Features](#features)
+-   [Installation](#installation)
+-   [Usage](#usage)
+-   [Configuration](#configuration)
+-   [Customization](#customization)
+-   [Contributing](#contributing)
 
 ## Introduction
 
