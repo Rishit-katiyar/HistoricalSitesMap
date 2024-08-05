@@ -1,8 +1,8 @@
 import folium
 import numpy as np
 
-
 # Define the historical sites with their names and coordinates
+
 sites = [
     ("Göbekli Tepe", 37.2231, 38.9225),
     ("Tower of Jericho", 31.8667, 35.4500),
