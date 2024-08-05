@@ -1,10 +1,6 @@
-
-
-
-
-
 import folium
 import numpy as np
+
 
 # Define the historical sites with their names and coordinates
 sites = [
