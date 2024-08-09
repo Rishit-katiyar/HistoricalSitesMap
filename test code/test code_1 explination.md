@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 # Detailed Explanation of Python Code: Adding Historical Site Markers on a Map
 
 ## Importing Folium Library
